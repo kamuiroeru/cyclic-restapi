@@ -14,4 +14,10 @@ app.get('/h', (req, res) => {
   res.status(200).send('hello!')
 })
 
+app.get('/cev', (req, res) => {
+  res.status(200).json({
+    CUSTOM_ENV: process.env.CUSTOM_ENV,
+  })
+})
+
 module.exports = app
