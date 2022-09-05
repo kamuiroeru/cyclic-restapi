@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>URL Shorter</title>
+  <meta charset="UTF-8">
+  <link rel="shortcut icon" href="/public/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" as="style"
+    onload="this.onload=null;this.rel='stylesheet'" />
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div class="container">
+      <section class="section">
+        <div class="is-size-1">URL短縮ツール</div>
+      </section>
+      <section class="section">
+        <form id="main-form" @submit.prevent="onSubmit">
+          <div class="field">
+            <label class="label">短縮したいURLを入力してください</label>
+            <p class="control has-icons-left">
+              <input v-model="origin" class="input" :class="{ 'is-danger': showError }" type="text" name="origin"
+                placeholder="https://something.domain.com/path/to/content#section" :readonly="isGenerated">
+              <span class="icon is-small is-left">
+                <i class="fas fa-link"></i>
+              </span>
+            </p>
+            <p class="help is-danger" style="transition: ease 0.3s;" :style="`opacity: ${(showError) ? 1 : 0}`">
+              URLの形式が不適切です
+            </p>
+          </div>
+          <div v-if="!isGenerated" class="field">
+            <div class="control is-flex is-justify-content-flex-end">
+              <button id="submit-button" class="button is-info" :class="{ 'is-loading': isLoading}" type="submit"
+                :disabled="!originIsValidUrl">
+                <span class="icon">
+                  <i class="fas fa-magic"></i>
+                </span>
+                <span>生成 (Enter でもOK )</span>
+              </button>
+            </div>
+          </div>
+        </form>
+        <template v-if="isGenerated">
+          <div class="field is-flex is-justify-content-center">
+            <!-- <i class="fas fa-angle-down fa-2x"></i> -->
+            <i class="fas fa-arrow-down fa-2x"></i>
+          </div>
+          <div class="field">
+            <label class="label">短縮したURLはこちらです</label>
+            <p class="control has-icons-left">
+              <input :value="generatedUrl" class="input is-success" type="text" readonly @focus="copyGeneratedUrl">
+              <span class="icon is-small is-left">
+                <i class="fas fa-link"></i>
+              </span>
+            </p>
+            <strong class="has-text-info" style="transition: ease 0.3s;" :style="`opacity: ${(isCopied) ? 1 : 0}`">
+              コピーしました
+            </strong>
+          </div>
+          <div class="pt-6 field is-flex is-justify-content-center">
+            <button class="button is-link" @click="reset">
+              <span class="icon">
+                <i class="fas fa-redo"></i>
+              </span>
+              <span>他のURLも短縮する</span>
+            </button>
+          </div>
+        </template>
+      </section>
+    </div>
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          Powered by <a href="https://cyclic.sh">cyclic.sh</a>. The source code is licensed
+          <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
+          is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
+        </p>
+      </div>
+    </footer>
+  </div>
+</body>
+
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      origin: '',
+      isLoading: false,
+      generatedId: '',
+      isCopied: false,
+    },
+    computed: {
+      originIsValidUrl() {
+        // URL かどうかチェックする
+        // FYI: https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
+        let url;
+        try {
+          url = new URL(this.origin);
+        } catch (_) {
+          return false;
+        }
+        return url.protocol === "http:" || url.protocol === "https:";
+      },
+      showError() {
+        return this.origin.length && !this.originIsValidUrl
+      },
+      isGenerated() {
+        return this.generatedId.length > 0
+      },
+      generatedUrl() {
+        return location.origin + '/r/' + this.generatedId
+      }
+    },
+    methods: {
+      onSubmit() {
+        this.isLoading = true
+        fetch('/r', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            origin: this.origin.trim()
+          })
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            this.generatedId = data.id
+          })
+          .catch((error) => console.error({ error }))
+          .finally(() => { this.isLoading = false })
+      },
+      copyGeneratedUrl(elem) {
+        console.log('copyGeneratedUrl')
+        console.log(this.generatedUrl)
+        navigator.clipboard.writeText(this.generatedUrl)
+        this.isCopied = true
+        setTimeout(() => {
+          document.activeElement.blur()
+          this.isCopied = false
+        }, 1000)
+      },
+      reset() {
+        this.origin = ''
+        this.generatedId = ''
+      }
+    }
+  })
+</script>
+
+</html>
