@@ -1,16 +1,19 @@
 // FYI: https://github.com/cyclic-software/db-sdk#collection-items
-export type PropsBase = {
+type PropsBase = {
   created: string
   updated: string
 }
-export type CyclicCollectionItem<T> = {
+type CyclicCollectionItemBase<T> = {
   collection: string
   key: string
-  props: T & PropsBase
+  props: PropsBase & Content
   $index?: string[]
 }
 
-export type Record = {
+type Content = {
   id: string
   origin: string
 }
+
+export type CyclicCollectionItem = CyclicCollectionItemBase<Content>
+export type Record = PropsBase & Content

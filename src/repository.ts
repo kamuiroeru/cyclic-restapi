@@ -8,9 +8,9 @@ const generateId = (): string => {
   return generateUuidV4().slice(0, 7)
 }
 
-export const select = async (id: string): Promise<Record & PropsBase> => {
+export const select = async (id: string): Promise<Record> => {
   const idToOrigin = db.collection('idToOrigin')
-  const cyclicItem: CyclicCollectionItem<Record> = await idToOrigin.get(id)
+  const cyclicItem: CyclicCollectionItem = await idToOrigin.get(id)
   if (cyclicItem !== null) {
     return cyclicItem.props
   } else {
