@@ -1,3 +1,9 @@
+import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
 export const generateUuidV4 = (): string => {
   let chars = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.split('')
   for (let i = 0, len = chars.length; i < len; i++) {
@@ -11,4 +17,8 @@ export const generateUuidV4 = (): string => {
     }
   }
   return chars.join('')
+}
+
+export const now = (): string => {
+  return dayjs().tz().format()
 }
