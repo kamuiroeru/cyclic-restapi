@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import path from 'path'
 import { insert, select } from './repository'
 import { utcToJst } from './utils'
 
@@ -8,7 +9,7 @@ router.get('/:id', async (req, res) => {
   const id = req.params.id
   const record = await select(id)
   if (record === null) {
-    res.sendStatus(404)
+    res.sendFile(path.join(__dirname, '..', 'public', 'notfound.html'))
     return
   }
   res.redirect(record.origin)

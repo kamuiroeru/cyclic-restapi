@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>URL Shorter - Not Found</title>
+  <meta charset="UTF-8">
+  <link rel="shortcut icon" href="/public/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" as="style"
+    onload="this.onload=null;this.rel='stylesheet'" />
+  <!-- OGP -->
+  <meta property="og:title" content="URL短縮ツール">
+  <meta property="og:url" content="https://gg.cyclic.app/">
+  <meta property="og:image" content="https://gg.cyclic.app/public/img/ogp.png">
+  <meta property="og:type" content="website" />
+  <meta property="og:description" content="URLを短縮できるサービスです。cyclic.sh でホスティングしています。" />
+  <meta property="og:site_name" content="gg.cyclic.app" />
+</head>
+
+<body>
+  <div id="app">
+    <div class="container">
+      <section class="section is-flex is-flex-direction-column	 is-align-items-center">
+        <div class="is-size-1-tablet is-size-2-mobile">
+          <!-- <i class="fas fa-exclamation-circle has-text-danger"></i> -->
+          <span class="has-text-danger">404</span>
+          <span class="has-text-danger">Not Found</span>
+          <!-- <i class="fas fa-exclamation-circle has-text-danger"></i> -->
+        </div>
+        <div id="linkDisplay"></div>
+      </section>
+      <section class="is-flex is-justify-content-center">
+        <div class="is-size-4 columns">
+          <div class="is-12-mobile">指定された短縮URLでは、</div>
+          <div class="is-12-mobile">元のURLを復元できません。</div>
+        </div>
+      </section>
+      <section class="section is-flex is-justify-content-center">
+        <button class="button is-link" onclick="location.href = '/public/index.html'">
+          <span class="icon">
+            <i class="fas fa-redo"></i>
+          </span>
+          <span>短縮URLを再生成する</span>
+        </button>
+      </section>
+    </div>
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          Powered by <a href="https://cyclic.sh">cyclic.sh</a>. The source code is licensed
+          <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
+          is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
+        </p>
+      </div>
+    </footer>
+  </div>
+</body>
+
+<script>
+  document.getElementById('linkDisplay').innerHTML = location.href
+</script>
+
+</html>
