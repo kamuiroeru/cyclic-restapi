@@ -1,17 +1,29 @@
+import CyclicDB from 'cyclic-dynamodb'
+import { CyclicCollectionItem, PropsBase, Record } from './domain'
 import { generateUuidV4 } from './utils'
+
+const db = CyclicDB(process.env.CYCLIC_DB)
 
 const generateId = (): string => {
   return generateUuidV4().slice(0, 7)
 }
 
-const idToOriginStore: { [id: string]: string } = {}
-
-export const select = (id: string): string => {
-  return id in idToOriginStore ? idToOriginStore[id] : null
+export const select = async (id: string): Promise<Record & PropsBase> => {
+  const idToOrigin = db.collection('idToOrigin')
+  const cyclicItem: CyclicCollectionItem<Record> = await idToOrigin.get(id)
+  if (cyclicItem !== null) {
+    return cyclicItem.props
+  } else {
+    return null
+  }
 }
 
-export const insert = (origin: string): string => {
+export const insert = async (origin: string): Promise<string> => {
   const id = generateId()
-  idToOriginStore[id] = origin
+  const idToOrigin = db.collection('idToOrigin')
+  await idToOrigin.set(id, {
+    id,
+    origin,
+  })
   return id
 }

@@ -22,3 +22,7 @@ export const generateUuidV4 = (): string => {
 export const now = (): string => {
   return dayjs().tz().format()
 }
+
+export const utcToJst = (base: string): string => {
+  return dayjs.utc(base).tz('Asia/Tokyo').format()
+}
